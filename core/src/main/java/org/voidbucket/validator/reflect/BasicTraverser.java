@@ -2,6 +2,7 @@ package org.voidbucket.validator.reflect;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.voidbucket.validator.reflect.traverse.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -25,7 +26,7 @@ public final class BasicTraverser implements Traverser {
 
     @Override
     public void traverse(final Class<?> subject, final Visitor visitor) {
-        final TypeNode root = nodeFactory.getTypeNode(null, subject);
+        final TypeNode root = nodeFactory.createTypeNode(null, subject);
         visitType(root, visitor);
     }
 
@@ -40,7 +41,7 @@ public final class BasicTraverser implements Traverser {
         // Traverse fields.
         final Field[] fields = node.getType().getFields();
         for (Field field : fields) {
-            final FieldNode fieldNode = nodeFactory.getFieldNode(node, field);
+            final FieldNode fieldNode = nodeFactory.createFieldNode(node, field);
             visitField(fieldNode, visitor);
         }
 
@@ -48,7 +49,7 @@ public final class BasicTraverser implements Traverser {
         // Traverse methods.
         final Method[] methods = node.getType().getMethods();
         for (Method method : methods) {
-            final MethodNode methodNode = nodeFactory.getMethodNode(node, method);
+            final MethodNode methodNode = nodeFactory.createMethodNode(node, method);
             visitMethod(methodNode, visitor);
         }
     }
@@ -63,7 +64,7 @@ public final class BasicTraverser implements Traverser {
 
         // Traverse the type of this field.
         final Class<?> type = node.getField().getType();
-        final TypeNode typeNode = nodeFactory.getTypeNode(node, type);
+        final TypeNode typeNode = nodeFactory.createTypeNode(node, type);
         visitType(typeNode, visitor);
     }
 

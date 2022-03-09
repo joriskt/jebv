@@ -1,7 +1,7 @@
 package org.voidbucket.validator.reflect.node;
 
-import org.voidbucket.validator.reflect.Node;
-import org.voidbucket.validator.reflect.Path;
+import org.voidbucket.validator.reflect.traverse.Node;
+import org.voidbucket.validator.reflect.traverse.Path;
 
 public abstract class BaseNode implements Node {
 

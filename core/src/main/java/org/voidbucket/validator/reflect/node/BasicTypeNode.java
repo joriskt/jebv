@@ -1,7 +1,7 @@
 package org.voidbucket.validator.reflect.node;
 
-import org.voidbucket.validator.reflect.Node;
-import org.voidbucket.validator.reflect.TypeNode;
+import org.voidbucket.validator.reflect.traverse.Node;
+import org.voidbucket.validator.reflect.traverse.TypeNode;
 
 public final class BasicTypeNode extends BaseNode implements TypeNode {
 

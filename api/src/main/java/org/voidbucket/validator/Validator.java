@@ -1,5 +1,9 @@
 package org.voidbucket.validator;
 
-public interface Validator {
-    <T> Result validate(T subject);
+import org.jetbrains.annotations.NotNull;
+
+public interface Validator<T> {
+
+    @NotNull ValidationReport validate(@NotNull T subject);
+
 }

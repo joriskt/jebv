@@ -1,7 +1,7 @@
 package org.voidbucket.validator.reflect.node;
 
-import org.voidbucket.validator.reflect.FieldNode;
-import org.voidbucket.validator.reflect.Node;
+import org.voidbucket.validator.reflect.traverse.FieldNode;
+import org.voidbucket.validator.reflect.traverse.Node;
 
 import java.lang.reflect.Field;
 

@@ -1,7 +1,7 @@
 package org.voidbucket.validator.reflect;
 
 import org.junit.jupiter.api.Test;
-import org.voidbucket.validator.reflect.Path;
+import org.voidbucket.validator.reflect.traverse.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
