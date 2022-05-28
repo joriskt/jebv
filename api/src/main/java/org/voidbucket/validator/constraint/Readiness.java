@@ -3,7 +3,7 @@ package org.voidbucket.validator.constraint;
 /**
  * Describes the <b>readiness</b> of a {@link Constraint}.
  */
-public enum ConstraintReadiness implements Comparable<ConstraintReadiness> {
+public enum Readiness implements Comparable<Readiness> {
 
     /**
      * The constraint should be skipped. Takes priority over {@link #FAIL}.

@@ -10,9 +10,9 @@ import org.voidbucket.validator.exception.ConstraintInvocationException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
-import static org.voidbucket.validator.constraint.invoker.ContextualConstraintInvoker.ParameterResolverMethod.*;
+import static org.voidbucket.validator.constraint.invoker.ContextualMethodInvoker.ParameterResolverMethod.*;
 
-public final class ContextualConstraintInvoker extends AbstractConstraintInvoker {
+public final class ContextualMethodInvoker extends AbstractMethodInvoker {
 
     @Getter
     private final ParameterResolverStrategy parameterResolverStrategy;
@@ -20,7 +20,7 @@ public final class ContextualConstraintInvoker extends AbstractConstraintInvoker
     /**
      * Constructs this invoker using the default strategy: {@link ParameterResolverStrategy#BY_TYPE_THEN_NAME}.
      */
-    public ContextualConstraintInvoker() {
+    public ContextualMethodInvoker() {
         this(ParameterResolverStrategy.BY_TYPE_THEN_NAME);
     }
 
@@ -29,7 +29,7 @@ public final class ContextualConstraintInvoker extends AbstractConstraintInvoker
      *
      * @param parameterResolverStrategy the parameter resolving mode to use
      */
-    public ContextualConstraintInvoker(final ParameterResolverStrategy parameterResolverStrategy) {
+    public ContextualMethodInvoker(final ParameterResolverStrategy parameterResolverStrategy) {
         this.parameterResolverStrategy = parameterResolverStrategy;
     }
 
@@ -50,9 +50,10 @@ public final class ContextualConstraintInvoker extends AbstractConstraintInvoker
             if (arg == null) {
                 throw new ConstraintInvocationException(
                     constraint, this,
-                    String.format("Failed to resolve parameter %d of method %s#%s (mode = %s)",
-                                  i, method.getDeclaringClass().getCanonicalName(),
-                                  method.getName(), parameterResolverStrategy));
+                    String.format("While invoking method %s#%s, failed to resolve parameter %d of type %s. (mode = %s)",
+                                  method.getDeclaringClass().getCanonicalName(),
+                                  method.getName(), i, param.getType().getCanonicalName(),
+                                  parameterResolverStrategy));
             }
 
             args[i] = arg;

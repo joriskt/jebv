@@ -1,15 +1,16 @@
-package org.voidbucket.validator;
+package org.voidbucket.validator.example;
 
 import lombok.Builder;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.voidbucket.validator.Context;
 import org.voidbucket.validator.annotate.Check;
 import org.voidbucket.validator.annotate.Depends;
 import org.voidbucket.validator.annotate.Provides;
 import org.voidbucket.validator.annotate.Subject;
 
-import static org.voidbucket.validator.constraint.ConstraintReadiness.*;
+import static org.voidbucket.validator.constraint.Readiness.*;
 import static org.voidbucket.validator.constraint.ConstraintStatus.*;
 
 public class Example {

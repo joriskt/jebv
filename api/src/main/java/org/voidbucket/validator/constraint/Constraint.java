@@ -3,6 +3,7 @@ package org.voidbucket.validator.constraint;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.voidbucket.validator.Context;
+import org.voidbucket.validator.reflect.MethodInvoker;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -15,9 +16,7 @@ public interface Constraint {
 
     Method getMethod();
 
-    ConstraintMiddlewareChain getMiddlewares();
-
-    Class<? extends ConstraintValidator> getValidatorType();
+    ReadinessEvaluator getReadinessEvaluator();
 
     /**
      * Gets the unique name of this {@link Constraint}, or <b>null</b> if there is none.
@@ -46,9 +45,9 @@ public interface Constraint {
     }
 
     /**
-     * Gets the desired {@link ConstraintInvoker} that this constraints want to use.
+     * Gets the desired {@link MethodInvoker} that this constraints want to use.
      */
-    default @Nullable Class<? extends ConstraintInvoker> getDesiredInvoker() {
+    default @Nullable Class<? extends MethodInvoker> getDesiredInvoker() {
         return null;
     }
 

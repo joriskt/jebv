@@ -32,4 +32,11 @@ public enum ConstraintStatus {
         return this == UNREACHABLE;
     }
 
+    public boolean isFinalStatus() {
+        return this == PASSED ||
+               this == FAILED ||
+               this == SKIPPED ||
+               this == UNREACHABLE;
+    }
+
 }

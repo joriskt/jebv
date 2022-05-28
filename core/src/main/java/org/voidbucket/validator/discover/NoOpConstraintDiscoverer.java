@@ -11,7 +11,7 @@ import java.util.Set;
 public final class NoOpConstraintDiscoverer implements ConstraintDiscoverer {
 
     @Override
-    public Set<? extends Constraint> discoverFromSubject(Class<?> subject) {
+    public Set<? extends Constraint> discover(Class<?> subject) {
         return Set.of();
     }
 

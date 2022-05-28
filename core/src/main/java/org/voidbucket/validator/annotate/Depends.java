@@ -1,6 +1,6 @@
 package org.voidbucket.validator.annotate;
 
-import org.voidbucket.validator.constraint.ConstraintReadiness;
+import org.voidbucket.validator.constraint.Readiness;
 import org.voidbucket.validator.constraint.ConstraintStatus;
 
 import java.lang.annotation.Repeatable;
@@ -28,7 +28,7 @@ public @interface Depends {
     /**
      * The state this constraint gets when the dependencies are unmet.
      */
-    ConstraintReadiness otherwise() default ConstraintReadiness.FAIL;
+    Readiness otherwise() default Readiness.FAIL;
 
     @Target(METHOD)
     @Retention(RUNTIME)

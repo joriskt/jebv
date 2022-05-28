@@ -1,19 +1,19 @@
-package org.voidbucket.validator.constraint.middleware;
+package org.voidbucket.validator.constraint.readiness;
 
 import org.voidbucket.validator.ValidatorState;
-import org.voidbucket.validator.constraint.ConstraintReadiness;
-import org.voidbucket.validator.constraint.ConstraintMiddleware;
 import org.voidbucket.validator.constraint.ConstraintReference;
 import org.voidbucket.validator.constraint.ConstraintStatus;
+import org.voidbucket.validator.constraint.Readiness;
+import org.voidbucket.validator.constraint.ReadinessEvaluator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChronologyMiddleware implements ConstraintMiddleware {
+public class ChronologyReadinessEvaluator implements ReadinessEvaluator {
 
     private final List<ConstraintReference> afters;
 
-    public ChronologyMiddleware() {
+    public ChronologyReadinessEvaluator() {
         afters = new ArrayList<>();
     }
 
@@ -22,14 +22,14 @@ public class ChronologyMiddleware implements ConstraintMiddleware {
     }
 
     @Override
-    public ConstraintReadiness evaluate(final ValidatorState validatorState) {
+    public Readiness evaluate(final ValidatorState validatorState) {
         for (ConstraintReference after : afters) {
             final ConstraintStatus constraintStatus = validatorState.getStatus(after);
             if (constraintStatus.isPending()) {
-                return ConstraintReadiness.WAIT;
+                return Readiness.WAIT;
             }
         }
-        return ConstraintReadiness.READY;
+        return Readiness.READY;
     }
 
 }

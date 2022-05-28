@@ -5,15 +5,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
+import org.voidbucket.validator.ContextFactory;
 import org.voidbucket.validator.constraint.Constraint;
 import org.voidbucket.validator.constraint.ConstraintDiscoverer;
-import org.voidbucket.validator.constraint.ConstraintInvoker;
+import org.voidbucket.validator.reflect.MethodInvoker;
 import org.voidbucket.validator.constraint.ConstraintValidator;
-import org.voidbucket.validator.constraint.invoker.ContextualConstraintInvoker;
-import org.voidbucket.validator.constraint.invoker.NoArgsConstraintInvoker;
+import org.voidbucket.validator.constraint.invoker.ContextualMethodInvoker;
+import org.voidbucket.validator.constraint.invoker.NoArgsMethodInvoker;
+import org.voidbucket.validator.impl.DefaultContextFactory;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -22,34 +25,38 @@ import java.util.Set;
 @Accessors(chain = true)
 class SimpleValidatorConfig implements Cloneable {
 
+    private ContextFactory contextFactory;
+
     private Set<? extends ConstraintDiscoverer> discoverers;
     private Set<? extends ConstraintValidator> validators;
 
-    private ConstraintInvoker defaultInvoker;
-    private Set<? extends ConstraintInvoker> invokers;
+    private MethodInvoker defaultInvoker;
+    private Set<? extends MethodInvoker> invokers;
+    private Map<Class<? extends MethodInvoker>, MethodInvoker> invokerMap;
 
     public SimpleValidatorConfig() {
+        this.contextFactory = new DefaultContextFactory();
+
         this.discoverers = new HashSet<>();
         this.validators = new HashSet<>();
 
-        this.defaultInvoker = new ContextualConstraintInvoker();
+        this.defaultInvoker = new ContextualMethodInvoker();
         this.invokers = new HashSet<>(List.of(
             defaultInvoker,
-            new NoArgsConstraintInvoker()
+            new NoArgsMethodInvoker()
         ));
+    }
+
+    MethodInvoker getOrDefault(final Class<? extends MethodInvoker> invokerType) {
+        return invokerMap.getOrDefault(invokerType, defaultInvoker);
     }
 
     Set<Constraint> discoverConstraints(final Class<?> subjectType) {
         final Set<Constraint> constraints = new HashSet<>();
 
-        // Discover based on validators.
-        for (final ConstraintDiscoverer discoverer : discoverers) {
-            constraints.addAll(discoverer.discoverFromValidators(validators));
-        }
-
         // Discover based on the subject type.
         for (final ConstraintDiscoverer discoverer : discoverers) {
-            constraints.addAll(discoverer.discoverFromSubject(subjectType));
+            constraints.addAll(discoverer.discover(subjectType));
         }
 
         return constraints;

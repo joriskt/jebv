@@ -2,8 +2,8 @@ package org.voidbucket.validator.constraint.invoker;
 
 import org.voidbucket.validator.Context;
 import org.voidbucket.validator.constraint.Constraint;
-import org.voidbucket.validator.constraint.ConstraintInvoker;
-import org.voidbucket.validator.constraint.ConstraintReadiness;
+import org.voidbucket.validator.reflect.MethodInvoker;
+import org.voidbucket.validator.constraint.Readiness;
 import org.voidbucket.validator.constraint.ConstraintStatus;
 import org.voidbucket.validator.exception.ConstraintEvaluationException;
 import org.voidbucket.validator.exception.ConstraintInvocationException;
@@ -12,22 +12,37 @@ import org.voidbucket.validator.exception.result.ConstraintStatusException;
 
 import java.lang.reflect.InvocationTargetException;
 
-public abstract class AbstractConstraintInvoker implements ConstraintInvoker {
+public abstract class AbstractMethodInvoker implements MethodInvoker {
+
+    protected ConstraintStatus getDefaultStatus() {
+        return ConstraintStatus.PASSED;
+    }
 
     @Override
     public final ConstraintStatus invoke(Constraint constraint, Context context) {
+        final ConstraintStatus defaultStatus = getDefaultStatus();
+
         try {
-            final Object result = _invoke(constraint, context);
-            if (result instanceof ConstraintStatus status) {
+
+            final Object result;
+            try {
+                 result = _invoke(constraint, context);
+            } catch (InvocationTargetException ex) {
+                throw ex.getCause();
+            }
+
+            if (result == null && defaultStatus != null) {
+                return defaultStatus;
+            } else if (result instanceof ConstraintStatus status) {
                 return status;
-            } else if (result instanceof ConstraintReadiness readiness) {
+            } else if (result instanceof Readiness readiness) {
                 return readiness.toStatus();
             } else {
                 throw new ConstraintInvocationException(
                     constraint, this,
                     "Constraint result is neither a ConstraintStatus nor a ConstraintReadiness: " + result);
             }
-        } catch (IllegalAccessException | InvocationTargetException ex) {
+        } catch (IllegalAccessException ex) {
             throw new ConstraintInvocationException(constraint, this, "Failed to invoke constraint method", ex);
         } catch (ConstraintReadinessException ex) {
             return ex.getReadiness().toStatus();

@@ -5,7 +5,7 @@ import org.voidbucket.validator.Context;
 import org.voidbucket.validator.constraint.Constraint;
 
 @Slf4j
-public class NoArgsConstraintInvoker extends AbstractConstraintInvoker {
+public class NoArgsMethodInvoker extends AbstractMethodInvoker {
 
     @Override
     protected Object _invoke(final Constraint constraint, final Context context) throws Throwable {

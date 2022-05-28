@@ -1,12 +1,17 @@
 package org.voidbucket.validator;
 
+import org.jetbrains.annotations.NotNull;
 import org.voidbucket.validator.constraint.*;
+import org.voidbucket.validator.violation.Violation;
 
 public interface ValidatorState {
 
-    ConstraintStatus getStatus(final Constraint constraint);
-    ConstraintStatus getStatus(final ConstraintReference reference);
+    Object getSubject();
 
-    ParameterHolder getParameterHolder();
+    ConstraintStatus getStatus(@NotNull Constraint constraint);
+    ConstraintStatus getStatus(@NotNull ConstraintReference reference);
+
+    Context getContext();
+    void raise(@NotNull Violation violation);
 
 }

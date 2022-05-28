@@ -6,12 +6,12 @@ import org.voidbucket.validator.ParameterHolder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ParameterHolderImpl implements ParameterHolder {
+public final class DefaultParameterHolder implements ParameterHolder {
 
     private final Map<String, Object> namedValues;
     private final Map<Class<?>, Object> typedValues;
 
-    public ParameterHolderImpl() {
+    public DefaultParameterHolder() {
         this.namedValues = new HashMap<>();
         this.typedValues = new HashMap<>();
     }

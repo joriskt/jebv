@@ -8,16 +8,16 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FixedListSubjectConstraintDiscovererTest {
+class FixedListConstraintDiscovererTest {
 
     @Test
     public void discoverFromSubject_whenInputGiven_alwaysReturnsExactInput() {
         // Arrange
         final Set<Constraint> constraints = Set.of();
-        final ConstraintDiscoverer discoverer = new FixedListSubjectConstraintDiscoverer(constraints);
+        final ConstraintDiscoverer discoverer = new FixedListConstraintDiscoverer(constraints);
 
         // Act
-        final Set<? extends Constraint> output = discoverer.discoverFromSubject(null);
+        final Set<? extends Constraint> output = discoverer.discover(null);
 
         // Assert
         assertSame(constraints, output);
@@ -27,10 +27,10 @@ class FixedListSubjectConstraintDiscovererTest {
     public void discoverFromValidators_shouldReturnNull() {
         // Arrange
         final Set<Constraint> constraints = Set.of();
-        final ConstraintDiscoverer discoverer = new FixedListSubjectConstraintDiscoverer(constraints);
+        final ConstraintDiscoverer discoverer = new FixedListConstraintDiscoverer(constraints);
 
         // Act
-        final Set<? extends Constraint> output = discoverer.discoverFromValidators(null);
+        final Set<? extends Constraint> output = discoverer.discover(null);
 
         // Assert
         assertTrue(output.isEmpty());

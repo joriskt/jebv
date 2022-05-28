@@ -1,7 +1,10 @@
 package org.voidbucket.validator;
 
-public interface ContextFactory {
+import org.voidbucket.validator.constraint.Constraint;
 
-    Context createContext();
+public interface ContextFactory extends Cloneable {
+
+    Context createValidationContext(ValidatorState state);
+    Context createConstraintContext(Context parent, Constraint constraint);
 
 }

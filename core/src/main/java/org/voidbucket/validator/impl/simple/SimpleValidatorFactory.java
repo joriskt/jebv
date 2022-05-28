@@ -1,43 +1,129 @@
 package org.voidbucket.validator.impl.simple;
 
-import lombok.RequiredArgsConstructor;
+import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.NotNull;
+import org.voidbucket.validator.ContextFactory;
 import org.voidbucket.validator.Validator;
 import org.voidbucket.validator.ValidatorFactory;
 import org.voidbucket.validator.constraint.Constraint;
-import org.voidbucket.validator.constraint.ConstraintInvoker;
+import org.voidbucket.validator.constraint.ConstraintDiscoverer;
+import org.voidbucket.validator.reflect.MethodInvoker;
+import org.voidbucket.validator.constraint.ConstraintValidator;
+import org.voidbucket.validator.constraint.invoker.ContextualMethodInvoker;
+import org.voidbucket.validator.constraint.invoker.NoArgsMethodInvoker;
+import org.voidbucket.validator.impl.DefaultContextFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
-@RequiredArgsConstructor
 public final class SimpleValidatorFactory implements ValidatorFactory {
 
-    private final SimpleValidatorConfig config;
+    private ContextFactory contextFactory;
+
+    private Set<ConstraintValidator> constraintValidators;
+    private Set<ConstraintDiscoverer> constraintDiscoverers;
+
+    private MethodInvoker defaultInvoker;
+    private Set<MethodInvoker> invokers;
+    private Map<Class<? extends MethodInvoker>, MethodInvoker> invokerMap;
 
     public SimpleValidatorFactory() {
-        this(new SimpleValidatorConfig());
+        this.contextFactory = new DefaultContextFactory();
+        this.constraintDiscoverers = new HashSet<>();
+
+        this.defaultInvoker = new ContextualMethodInvoker();
+        this.invokers = new HashSet<>(List.of(
+            defaultInvoker,
+            new NoArgsMethodInvoker()
+        ));
+        initInvokerMap();
+    }
+
+    private void initInvokerMap() {
+        this.invokerMap = new HashMap<>();
+        for (final MethodInvoker invoker : invokers) {
+            invokerMap.put(invoker.getClass(), invoker);
+        }
+    }
+
+    public SimpleValidatorFactory contextFactory(final @NotNull ContextFactory contextFactory) {
+        Objects.requireNonNull(contextFactory, "contextFactory must not be null");
+        this.contextFactory = contextFactory;
+        return this;
+    }
+
+    public SimpleValidatorFactory constraintDiscoverers(final @NotNull Set<ConstraintDiscoverer> discoverers) {
+        Objects.requireNonNull(discoverers, "discoverers must not be null");
+        this.constraintDiscoverers = discoverers;
+        return this;
+    }
+
+    public SimpleValidatorFactory constraintDiscoverer(final @NotNull ConstraintDiscoverer discoverer) {
+        Objects.requireNonNull(discoverer, "discoverer must not be null");
+        this.constraintDiscoverers.add(discoverer);
+        return this;
+    }
+
+    public SimpleValidatorFactory defaultInvoker(final @NotNull MethodInvoker defaultInvoker) {
+        this.defaultInvoker = Objects.requireNonNull(defaultInvoker);
+        return this;
+    }
+
+    public SimpleValidatorFactory invoker(final @NotNull MethodInvoker invoker) {
+        Objects.requireNonNull(invoker);
+        if (invokerMap.containsKey(invoker.getClass())) {
+            throw new IllegalArgumentException(
+                "Invoker of type \"" + invoker.getClass().getCanonicalName() +
+                "\" is already registered. Consider calling #unregisterInvoker(Class<? extends ConstraintInvoker> first.");
+        }
+
+        invokers.add(invoker);
+        invokerMap.put(invoker.getClass(), invoker);
+        return this;
+    }
+
+    public SimpleValidatorFactory invokers(final @NotNull Collection<MethodInvoker> invokers) {
+        Objects.requireNonNull(invokers, "invokers must not be null");
+        this.invokers = new HashSet<>(invokers);
+        initInvokerMap();
+        return this;
+    }
+
+    public SimpleValidatorFactory removeInvoker(final @NotNull MethodInvoker invoker) {
+        Objects.requireNonNull(invoker, "invoker must not be null");
+        return removeInvoker(invoker.getClass());
+    }
+
+    public SimpleValidatorFactory removeInvoker(final @NotNull Class<? extends MethodInvoker> invokerType) {
+        Objects.requireNonNull(invokerType, "invokerType must not be null");
+        invokers.removeIf(invoker -> invoker.getClass().equals(invokerType));
+        invokerMap.remove(invokerType);
+        return this;
+    }
+
+    public SimpleValidatorFactory clearInvokers() {
+        this.invokers.clear();
+        this.invokerMap.clear();
+        return this;
     }
 
     @Override
     public @NotNull <T> Validator<T> createValidator(@NotNull Class<T> subjectType) {
-        Objects.requireNonNull(subjectType, "cannot construct validator for null type");
+        Objects.requireNonNull(subjectType, "subjectType must not be null");
 
-        // Prepare.
-        final Set<Constraint> constraints = config.discoverConstraints(subjectType);
-        final Map<Class<? extends ConstraintInvoker>, ConstraintInvoker> invokerMap =
-            buildInvokerMap(config.getInvokers());
+        // Discover constraints.
+        final List<Constraint> constraints = StreamEx.of(constraintDiscoverers)
+            .flatMap(discoverer -> discoverer.discover(subjectType).stream())
+            .map(constraint -> (Constraint) constraint)
+            .toList();
 
-        // Build!
-        return new SimpleValidator<T>(constraints, config.getDefaultInvoker(), invokerMap);
-    }
-
-    private Map<Class<? extends ConstraintInvoker>, ConstraintInvoker> buildInvokerMap(final Set<? extends ConstraintInvoker> invokers) {
-        final Map<Class<? extends ConstraintInvoker>, ConstraintInvoker> map = new HashMap<>();
-        invokers.forEach(invoker -> map.put(invoker.getClass(), invoker));
-        return map;
+        // Build the validator!
+        return SimpleValidator.<T>builder()
+            .constraints(constraints)
+            .subjectType(subjectType)
+            .contextFactory(contextFactory)
+            .defaultInvoker(defaultInvoker)
+            .invokerMap(new HashMap<>(invokerMap))
+            .build();
     }
 
 }

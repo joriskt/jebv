@@ -4,13 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.voidbucket.validator.annotate.After;
-import org.voidbucket.validator.annotate.Depends;
 import org.voidbucket.validator.constraint.*;
-import org.voidbucket.validator.constraint.middleware.ChronologyMiddleware;
-import org.voidbucket.validator.constraint.middleware.ConstraintMiddlewares;
-import org.voidbucket.validator.constraint.middleware.DependencyMiddleware;
-import org.voidbucket.validator.constraint.reference.ConstraintReferences;
+import org.voidbucket.validator.constraint.readiness.DependencyReadinessEvaluator;
+import org.voidbucket.validator.constraint.readiness.ReadinessEvaluatorChain;
+import org.voidbucket.validator.constraint.readiness.ReadinessEvaluators;
+import org.voidbucket.validator.reflect.MethodInvoker;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -43,45 +41,45 @@ public class AnnotatedValidatorConstraint implements Constraint {
 
     static {
         mutators = new HashMap<>();
-        mutators.put(Depends.class, ((constraint, annotation) -> {
-            final Depends depends = (Depends) annotation;
-            final Class<?>[] values = depends.value();
-            final Set<ConstraintStatus> permitted = Set.of(depends.permittedStatusses());
-            final ConstraintReadiness otherwise = depends.otherwise();
-
-            final DependencyMiddleware middleware = constraint.getMiddlewares()
-                .findOrRegister(DependencyMiddleware.class, DependencyMiddleware::new);
-
-            for (final Class<?> type : values) {
-                middleware.register(ConstraintReferences.ofType(type), (builder) -> {
-                    for (ConstraintStatus status : ConstraintStatus.values()) {
-                        if (!permitted.contains(status)) {
-                            builder.action(status, otherwise);
-                        }
-                    }
-                    return builder.build();
-                });
-            }
-
-            constraint.getMiddlewares()
-                .find(DependencyMiddleware.class);
-        }));
-        mutators.put(After.class, ((constraint, annotation) -> {
-            final After after = (After) annotation;
-            final ChronologyMiddleware evaluator = constraint.getMiddlewares()
-                .findOrRegister(ChronologyMiddleware.class, ChronologyMiddleware::new);
-
-            for (final Class<?> type : after.value()) {
-                evaluator.after(ConstraintReferences.ofType(type));
-            }
-        }));
+//        mutators.put(Depends.class, ((constraint, annotation) -> {
+//            final Depends depends = (Depends) annotation;
+//            final Class<?>[] values = depends.value();
+//            final Set<ConstraintStatus> permitted = Set.of(depends.permittedStatusses());
+//            final ConstraintReadiness otherwise = depends.otherwise();
+//
+//            final DependencyReadinessMiddleware middleware = constraint.getReadinessEvaluator()
+//                .findOrRegister(DependencyReadinessMiddleware.class, DependencyReadinessMiddleware::new);
+//
+//            for (final Class<?> type : values) {
+//                middleware.register(ConstraintReferences.ofType(type), (builder) -> {
+//                    for (ConstraintStatus status : ConstraintStatus.values()) {
+//                        if (!permitted.contains(status)) {
+//                            builder.action(status, otherwise);
+//                        }
+//                    }
+//                    return builder.build();
+//                });
+//            }
+//
+//            constraint.getReadinessEvaluator()
+//                .find(DependencyReadinessMiddleware.class);
+//        }));
+//        mutators.put(After.class, ((constraint, annotation) -> {
+//            final After after = (After) annotation;
+//            final ChronologyReadinessMiddleware evaluator = constraint.getReadinessEvaluator()
+//                .findOrRegister(ChronologyReadinessMiddleware.class, ChronologyReadinessMiddleware::new);
+//
+//            for (final Class<?> type : after.value()) {
+//                evaluator.after(ConstraintReferences.ofType(type));
+//            }
+//        }));
     }
 
     private final ConstraintValidator validator;
     private final Method method;
-    private final ConstraintMiddlewareChain middleware;
+    private final ReadinessEvaluatorChain readinessEvaluatorChain;
 
-    private Class<? extends ConstraintInvoker> desiredInvoker;
+    private Class<? extends MethodInvoker> desiredInvoker;
     private String name;
     private List<Class<?>> requiredTypes;
     private List<Class<?>> providedTypes;
@@ -90,24 +88,19 @@ public class AnnotatedValidatorConstraint implements Constraint {
                                  final Method method) {
         this.validator = validator;
         this.method = method;
-        this.middleware = ConstraintMiddlewares.chain();
+        this.readinessEvaluatorChain = ReadinessEvaluators.chain();
 
-        middleware.register(new DependencyMiddleware());
+        readinessEvaluatorChain.register(new DependencyReadinessEvaluator());
     }
 
     @Override
-    public @Nullable Class<? extends ConstraintInvoker> getDesiredInvoker() {
+    public @Nullable Class<? extends MethodInvoker> getDesiredInvoker() {
         return desiredInvoker;
     }
 
     @Override
-    public ConstraintMiddlewareChain getMiddlewares() {
-        return middleware;
-    }
-
-    @Override
-    public Class<? extends ConstraintValidator> getValidatorType() {
-        return validator.getClass();
+    public ReadinessEvaluator getReadinessEvaluator() {
+        return readinessEvaluatorChain;
     }
 
     @Override

@@ -20,8 +20,7 @@ import java.util.function.BiConsumer;
 @Slf4j
 public class AnnotatedValidatorConstraintDiscoverer implements ConstraintDiscoverer {
 
-    @Override
-    public Set<? extends Constraint> discoverFromValidators(final Set<? extends ConstraintValidator> validators) {
+    private Set<? extends Constraint> discoverFromValidators(final Set<? extends ConstraintValidator> validators) {
         final Set<Constraint> constraints = new HashSet<>();
         for (final ConstraintValidator validator : validators) {
             constraints.addAll(scanType(validator));

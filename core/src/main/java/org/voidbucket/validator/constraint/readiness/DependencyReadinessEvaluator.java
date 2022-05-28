@@ -1,4 +1,4 @@
-package org.voidbucket.validator.constraint.middleware;
+package org.voidbucket.validator.constraint.readiness;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,10 +6,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.voidbucket.validator.ValidatorState;
-import org.voidbucket.validator.constraint.ConstraintMiddleware;
-import org.voidbucket.validator.constraint.ConstraintReadiness;
 import org.voidbucket.validator.constraint.ConstraintReference;
 import org.voidbucket.validator.constraint.ConstraintStatus;
+import org.voidbucket.validator.constraint.Readiness;
+import org.voidbucket.validator.constraint.ReadinessEvaluator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,13 +18,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Slf4j
-public class DependencyMiddleware implements ConstraintMiddleware {
+public class DependencyReadinessEvaluator implements ReadinessEvaluator {
 
     public static final int PRIORITY = 1_000;
 
     private final Map<ConstraintReference, Dependency> dependencyMap;
 
-    public DependencyMiddleware() {
+    public DependencyReadinessEvaluator() {
         this.dependencyMap = new HashMap<>();
     }
 
@@ -34,30 +34,30 @@ public class DependencyMiddleware implements ConstraintMiddleware {
     }
 
     @Override
-    public ConstraintReadiness evaluate(final ValidatorState state) {
-        final List<ConstraintReadiness> actions = new ArrayList<>(dependencyMap.size());
+    public Readiness evaluate(final ValidatorState state) {
+        final List<Readiness> actions = new ArrayList<>(dependencyMap.size());
         for (Dependency dependency : dependencyMap.values()) {
             final ConstraintStatus constraintStatus = state.getStatus(dependency.getReference());
 
             // Fail if the dependency is unresolvable.
             if (!dependency.getActionMap().containsKey(constraintStatus)) {
                 log.warn("No ConstraintResult -> ConstraintAction mapping for key: {}", constraintStatus);
-                return ConstraintReadiness.NEVER;
+                return Readiness.NEVER;
             }
 
             // Return the action as specified in the action map.
-            final ConstraintReadiness action = dependency.getActionMap()
-                .getOrDefault(constraintStatus, ConstraintReadiness.READY);
+            final Readiness action = dependency.getActionMap()
+                .getOrDefault(constraintStatus, Readiness.READY);
             if (!action.isReady()) {
                 actions.add(action);
             }
         }
 
         // Sort the actions based on priority: SKIP > FAIL > WAIT > SCHEDULE.
-        actions.sort(ConstraintReadiness::compareTo);
+        actions.sort(Readiness::compareTo);
 
         // Grab the highest priority action as result.
-        return actions.stream().findFirst().orElse(ConstraintReadiness.READY);
+        return actions.stream().findFirst().orElse(Readiness.READY);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class DependencyMiddleware implements ConstraintMiddleware {
     public static final class Dependency {
 
         private final ConstraintReference reference;
-        private final Map<ConstraintStatus, ConstraintReadiness> actionMap;
+        private final Map<ConstraintStatus, Readiness> actionMap;
 
         public static DependencyBuilder builder() {
             return new DependencyBuilder();
@@ -83,14 +83,14 @@ public class DependencyMiddleware implements ConstraintMiddleware {
     public static final class DependencyBuilder {
 
         private ConstraintReference reference;
-        private Map<ConstraintStatus, ConstraintReadiness> actionMap;
+        private Map<ConstraintStatus, Readiness> actionMap;
 
         public DependencyBuilder() {
             actionMap = new HashMap<>();
         }
 
         public DependencyBuilder action(final ConstraintStatus status,
-                                        final ConstraintReadiness readiness) {
+                                        final Readiness readiness) {
             actionMap.put(status, readiness);
             return this;
         }
