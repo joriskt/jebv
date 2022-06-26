@@ -7,7 +7,7 @@ import org.voidbucket.validator.ContextFactory;
 import org.voidbucket.validator.ValidationReport;
 import org.voidbucket.validator.Validator;
 import org.voidbucket.validator.constraint.Constraint;
-import org.voidbucket.validator.reflect.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.MethodInvoker;
 
 import java.util.List;
 import java.util.Map;

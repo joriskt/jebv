@@ -3,9 +3,9 @@ package org.voidbucket.validator.constraint;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.voidbucket.validator.Context;
-import org.voidbucket.validator.constraint.invoker.ContextualMethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ContextualMethodInvoker;
 import org.voidbucket.validator.constraint.readiness.ReadinessEvaluatorChain;
-import org.voidbucket.validator.reflect.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.MethodInvoker;
 import org.voidbucket.validator.violation.Violation;
 
 import java.lang.reflect.Method;

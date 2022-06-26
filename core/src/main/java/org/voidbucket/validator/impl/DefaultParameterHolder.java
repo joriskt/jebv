@@ -38,14 +38,14 @@ public final class DefaultParameterHolder implements ParameterHolder {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T get(String key) {
-        return (T) namedValues.getOrDefault(key, null);
+    public <T> @NotNull T get(String key) {
+        return (T) namedValues.get(key);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T get(Class<T> type) {
-        return (T) typedValues.getOrDefault(type, null);
+    public <T> @NotNull T get(Class<T> type) {
+        return (T) typedValues.get(type);
     }
 
     @Override

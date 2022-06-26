@@ -8,7 +8,7 @@ import org.voidbucket.validator.constraint.*;
 import org.voidbucket.validator.constraint.readiness.DependencyReadinessEvaluator;
 import org.voidbucket.validator.constraint.readiness.ReadinessEvaluatorChain;
 import org.voidbucket.validator.constraint.readiness.ReadinessEvaluators;
-import org.voidbucket.validator.reflect.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.MethodInvoker;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

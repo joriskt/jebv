@@ -34,6 +34,11 @@ public class FixedResultConstraint implements Constraint {
     }
 
     @Override
+    public Object getInstance() {
+        return this;
+    }
+
+    @Override
     @SneakyThrows
     public Method getMethod() {
         return getClass().getMethod("evaluate");

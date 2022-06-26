@@ -10,6 +10,9 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
+/**
+ * Indicates that the method
+ */
 @Target(METHOD)
 @Retention(RUNTIME)
 @Repeatable(Depends.List.class)

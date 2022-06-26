@@ -11,7 +11,7 @@ import org.voidbucket.validator.ValidatorState;
 import org.voidbucket.validator.constraint.*;
 import org.voidbucket.validator.constraint.Readiness;
 import org.voidbucket.validator.impl.DefaultValidationReport;
-import org.voidbucket.validator.reflect.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.MethodInvoker;
 import org.voidbucket.validator.violation.Violation;
 
 import java.util.*;
@@ -85,7 +85,8 @@ public final class SimpleValidatorRunner implements ValidatorState {
 
         // Evaluate the constraint.
         final Context context = contextFactory.createConstraintContext(rootContext, constraint);
-        final ConstraintStatus status = invoker.invoke(constraint, context);
+        final Object output = invoker.invoke(constraint.getInstance(), constraint.getMethod(), context);
+        final ConstraintStatus status = mapStatus(output);
 
         // Save the status, regardless of what it is.
         setStatus(constraint, status);
@@ -96,6 +97,14 @@ public final class SimpleValidatorRunner implements ValidatorState {
         }
 
         return true;
+    }
+
+    private ConstraintStatus mapStatus(final Object result) {
+        if (result == null) {
+            return ConstraintStatus.PASSED;
+        } else {
+            return ConstraintStatus.POSTPONED;
+        }
     }
 
     ValidationReport buildReport() {

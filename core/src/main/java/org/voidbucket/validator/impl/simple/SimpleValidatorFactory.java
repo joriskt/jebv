@@ -7,10 +7,10 @@ import org.voidbucket.validator.Validator;
 import org.voidbucket.validator.ValidatorFactory;
 import org.voidbucket.validator.constraint.Constraint;
 import org.voidbucket.validator.constraint.ConstraintDiscoverer;
-import org.voidbucket.validator.reflect.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.MethodInvoker;
 import org.voidbucket.validator.constraint.ConstraintValidator;
-import org.voidbucket.validator.constraint.invoker.ContextualMethodInvoker;
-import org.voidbucket.validator.constraint.invoker.NoArgsMethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ContextualMethodInvoker;
+import org.voidbucket.validator.reflect.invoke.NoArgsMethodInvoker;
 import org.voidbucket.validator.impl.DefaultContextFactory;
 
 import java.util.*;

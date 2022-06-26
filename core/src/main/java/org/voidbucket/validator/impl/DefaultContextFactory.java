@@ -8,12 +8,12 @@ import org.voidbucket.validator.constraint.Constraint;
 public final class DefaultContextFactory implements ContextFactory {
 
     @Override
-    public Context createValidationContext(ValidatorState state) {
+    public Context createValidationContext(final ValidatorState state) {
         return new DefaultContext(state, state.getSubject());
     }
 
     @Override
-    public Context createConstraintContext(Context parent, Constraint constraint) {
+    public Context createConstraintContext(final Context parent, final Constraint constraint) {
         return new DefaultContext(parent.getState(), parent.getState().getSubject());
     }
 
