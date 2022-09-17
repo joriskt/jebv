@@ -1,4 +1,4 @@
-package org.voidbucket.validator.annotate;
+package org.voidbucket.validator.annotation;
 
 import org.voidbucket.validator.constraint.Readiness;
 import org.voidbucket.validator.constraint.ConstraintStatus;
@@ -26,7 +26,7 @@ public @interface Depends {
     /**
      * The permitted statusses.
      */
-    ConstraintStatus[] permittedStatusses() default { ConstraintStatus.PASSED };
+    ConstraintStatus[] permitted() default { ConstraintStatus.PASSED };
 
     /**
      * The state this constraint gets when the dependencies are unmet.

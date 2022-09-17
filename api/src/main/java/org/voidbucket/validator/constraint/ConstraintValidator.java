@@ -1,13 +1,14 @@
 package org.voidbucket.validator.constraint;
 
 import org.voidbucket.validator.Context;
+import org.voidbucket.validator.Validator;
 
 /**
- * Validates a {@link Constraint} using the given {@link Context},
- * returning a {@link ConstraintStatus}.
+ * <p>A {@link ConstraintValidator} is effectively a stand-alone subset of a {@link Validator}, aimed
+ * at validating a specific set of {@link Constraint}s.</p>
  */
 public interface ConstraintValidator {
 
-    ConstraintStatus validate(Context context, Constraint constraint);
+    ConstraintStatus validate(Constraint constraint, Context context);
 
 }

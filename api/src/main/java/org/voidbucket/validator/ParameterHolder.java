@@ -1,10 +1,10 @@
 package org.voidbucket.validator;
 
 import org.jetbrains.annotations.NotNull;
-import org.voidbucket.validator.reflect.invoke.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ConstraintInvoker;
 
 /**
- * A simple object that holds parameters and their values by type or name. Used by {@link MethodInvoker}s.
+ * A simple object that holds parameters and their values by type or name. Used by {@link ConstraintInvoker}s.
  */
 public interface ParameterHolder {
 

@@ -11,7 +11,7 @@ import org.voidbucket.validator.ValidatorState;
 import org.voidbucket.validator.constraint.*;
 import org.voidbucket.validator.constraint.Readiness;
 import org.voidbucket.validator.impl.DefaultValidationReport;
-import org.voidbucket.validator.reflect.invoke.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ConstraintInvoker;
 import org.voidbucket.validator.violation.Violation;
 
 import java.util.*;
@@ -27,8 +27,8 @@ public final class SimpleValidatorRunner implements ValidatorState {
     private final List<Constraint> remainingConstraints;
 
     // Invokers
-    private final MethodInvoker defaultInvoker;
-    private final Map<Class<? extends MethodInvoker>, MethodInvoker> invokerMap;
+    private final ConstraintInvoker defaultInvoker;
+    private final Map<Class<? extends ConstraintInvoker>, ConstraintInvoker> invokerMap;
 
     // Context
     private final ContextFactory contextFactory;
@@ -36,8 +36,8 @@ public final class SimpleValidatorRunner implements ValidatorState {
 
     SimpleValidatorRunner(final Object subject,
                           final List<Constraint> constraints,
-                          final MethodInvoker defaultInvoker,
-                          final Map<Class<? extends MethodInvoker>, MethodInvoker> invokerMap,
+                          final ConstraintInvoker defaultInvoker,
+                          final Map<Class<? extends ConstraintInvoker>, ConstraintInvoker> invokerMap,
                           final ContextFactory contextFactory) {
         this.subject = subject;
         this.violations = new ArrayList<>();
@@ -67,8 +67,8 @@ public final class SimpleValidatorRunner implements ValidatorState {
             return false;
         }
 
-        final Class<? extends MethodInvoker> desiredInvoker = constraint.getDesiredInvoker();
-        final MethodInvoker invoker;
+        final Class<? extends ConstraintInvoker> desiredInvoker = constraint.getDesiredInvoker();
+        final ConstraintInvoker invoker;
 
         // Determine the invoker to use.
         if (desiredInvoker != null) {
@@ -85,8 +85,7 @@ public final class SimpleValidatorRunner implements ValidatorState {
 
         // Evaluate the constraint.
         final Context context = contextFactory.createConstraintContext(rootContext, constraint);
-        final Object output = invoker.invoke(constraint.getInstance(), constraint.getMethod(), context);
-        final ConstraintStatus status = mapStatus(output);
+        final ConstraintStatus status = invoker.invoke(constraint, context);
 
         // Save the status, regardless of what it is.
         setStatus(constraint, status);

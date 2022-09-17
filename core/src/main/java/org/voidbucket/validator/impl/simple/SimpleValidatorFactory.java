@@ -7,10 +7,10 @@ import org.voidbucket.validator.Validator;
 import org.voidbucket.validator.ValidatorFactory;
 import org.voidbucket.validator.constraint.Constraint;
 import org.voidbucket.validator.constraint.ConstraintDiscoverer;
-import org.voidbucket.validator.reflect.invoke.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ConstraintInvoker;
 import org.voidbucket.validator.constraint.ConstraintValidator;
-import org.voidbucket.validator.reflect.invoke.ContextualMethodInvoker;
-import org.voidbucket.validator.reflect.invoke.NoArgsMethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ContextualConstraintInvoker;
+import org.voidbucket.validator.reflect.invoke.NoArgsConstraintInvoker;
 import org.voidbucket.validator.impl.DefaultContextFactory;
 
 import java.util.*;
@@ -22,25 +22,25 @@ public final class SimpleValidatorFactory implements ValidatorFactory {
     private Set<ConstraintValidator> constraintValidators;
     private Set<ConstraintDiscoverer> constraintDiscoverers;
 
-    private MethodInvoker defaultInvoker;
-    private Set<MethodInvoker> invokers;
-    private Map<Class<? extends MethodInvoker>, MethodInvoker> invokerMap;
+    private ConstraintInvoker defaultInvoker;
+    private Set<ConstraintInvoker> invokers;
+    private Map<Class<? extends ConstraintInvoker>, ConstraintInvoker> invokerMap;
 
     public SimpleValidatorFactory() {
         this.contextFactory = new DefaultContextFactory();
         this.constraintDiscoverers = new HashSet<>();
 
-        this.defaultInvoker = new ContextualMethodInvoker();
+        this.defaultInvoker = new ContextualConstraintInvoker();
         this.invokers = new HashSet<>(List.of(
             defaultInvoker,
-            new NoArgsMethodInvoker()
+            new NoArgsConstraintInvoker()
         ));
         initInvokerMap();
     }
 
     private void initInvokerMap() {
         this.invokerMap = new HashMap<>();
-        for (final MethodInvoker invoker : invokers) {
+        for (final ConstraintInvoker invoker : invokers) {
             invokerMap.put(invoker.getClass(), invoker);
         }
     }
@@ -63,12 +63,12 @@ public final class SimpleValidatorFactory implements ValidatorFactory {
         return this;
     }
 
-    public SimpleValidatorFactory defaultInvoker(final @NotNull MethodInvoker defaultInvoker) {
+    public SimpleValidatorFactory defaultInvoker(final @NotNull ConstraintInvoker defaultInvoker) {
         this.defaultInvoker = Objects.requireNonNull(defaultInvoker);
         return this;
     }
 
-    public SimpleValidatorFactory invoker(final @NotNull MethodInvoker invoker) {
+    public SimpleValidatorFactory invoker(final @NotNull ConstraintInvoker invoker) {
         Objects.requireNonNull(invoker);
         if (invokerMap.containsKey(invoker.getClass())) {
             throw new IllegalArgumentException(
@@ -81,19 +81,19 @@ public final class SimpleValidatorFactory implements ValidatorFactory {
         return this;
     }
 
-    public SimpleValidatorFactory invokers(final @NotNull Collection<MethodInvoker> invokers) {
+    public SimpleValidatorFactory invokers(final @NotNull Collection<ConstraintInvoker> invokers) {
         Objects.requireNonNull(invokers, "invokers must not be null");
         this.invokers = new HashSet<>(invokers);
         initInvokerMap();
         return this;
     }
 
-    public SimpleValidatorFactory removeInvoker(final @NotNull MethodInvoker invoker) {
+    public SimpleValidatorFactory removeInvoker(final @NotNull ConstraintInvoker invoker) {
         Objects.requireNonNull(invoker, "invoker must not be null");
         return removeInvoker(invoker.getClass());
     }
 
-    public SimpleValidatorFactory removeInvoker(final @NotNull Class<? extends MethodInvoker> invokerType) {
+    public SimpleValidatorFactory removeInvoker(final @NotNull Class<? extends ConstraintInvoker> invokerType) {
         Objects.requireNonNull(invokerType, "invokerType must not be null");
         invokers.removeIf(invoker -> invoker.getClass().equals(invokerType));
         invokerMap.remove(invokerType);

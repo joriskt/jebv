@@ -1,4 +1,4 @@
-package org.voidbucket.validator.annotate;
+package org.voidbucket.validator.annotation;
 
 import org.voidbucket.validator.Context;
 

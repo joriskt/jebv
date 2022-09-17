@@ -2,12 +2,13 @@ package org.voidbucket.validator.constraint;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.voidbucket.validator.reflect.invoke.NoArgsConstraintInvoker;
+import org.voidbucket.validator.exception.result.ConstraintStatusException;
 import org.voidbucket.validator.reflect.invoke.ConstraintInvoker;
+import org.voidbucket.validator.reflect.invoke.NoArgsConstraintInvoker;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FixedResultConstraintTest {
+class RunnableConstraintTest {
 
     private static ConstraintInvoker INVOKER;
 
@@ -17,10 +18,13 @@ class FixedResultConstraintTest {
     }
 
     @Test
-    public void evaluate_whenGivenStatus_shouldReturnStatus() {
+    public void evaluate_whenThrowingStatus_shouldReturnStatus() {
         for (ConstraintStatus expected : ConstraintStatus.values()) {
+
             // Arrange
-            final Constraint constraint = new FixedResultConstraint(expected);
+            final Constraint constraint = new RunnableConstraint(() -> {
+                throw new ConstraintStatusException(expected);
+            });
 
             // Act
             final ConstraintStatus status = INVOKER.invoke(constraint, null);

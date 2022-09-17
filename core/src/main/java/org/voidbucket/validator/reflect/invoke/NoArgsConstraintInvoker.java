@@ -7,7 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 @Slf4j
-public class NoArgsMethodInvoker extends AbstractMethodInvoker {
+public class NoArgsConstraintInvoker extends AbstractConstraintInvoker {
 
     @Override
     protected Object _invoke(final Object instance, final Method method, final Context context)

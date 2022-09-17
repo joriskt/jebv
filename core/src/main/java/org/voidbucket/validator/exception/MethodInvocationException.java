@@ -1,31 +1,30 @@
 package org.voidbucket.validator.exception;
 
 import lombok.Getter;
-import org.voidbucket.validator.constraint.Constraint;
-import org.voidbucket.validator.reflect.invoke.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ConstraintInvoker;
 
 public final class MethodInvocationException extends RuntimeException {
 
     @Getter
-    public final MethodInvoker methodInvoker;
+    public final ConstraintInvoker constraintInvoker;
 
-    public MethodInvocationException(final MethodInvoker methodInvoker,
+    public MethodInvocationException(final ConstraintInvoker constraintInvoker,
                                      final String message) {
         super(message);
-        this.methodInvoker = methodInvoker;
+        this.constraintInvoker = constraintInvoker;
     }
 
-    public MethodInvocationException(final MethodInvoker methodInvoker,
+    public MethodInvocationException(final ConstraintInvoker constraintInvoker,
                                      final String message,
                                      final Throwable cause) {
         super(message, cause);
-        this.methodInvoker = methodInvoker;
+        this.constraintInvoker = constraintInvoker;
     }
 
-    public MethodInvocationException(final MethodInvoker methodInvoker,
+    public MethodInvocationException(final ConstraintInvoker constraintInvoker,
                                      final Throwable cause) {
         super(cause);
-        this.methodInvoker = methodInvoker;
+        this.constraintInvoker = constraintInvoker;
     }
 
 }

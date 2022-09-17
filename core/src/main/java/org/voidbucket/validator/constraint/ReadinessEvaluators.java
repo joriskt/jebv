@@ -1,4 +1,4 @@
-package org.voidbucket.validator.constraint.readiness;
+package org.voidbucket.validator.constraint;
 
 public final class ReadinessEvaluators {
 

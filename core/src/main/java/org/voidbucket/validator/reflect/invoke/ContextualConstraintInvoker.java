@@ -11,12 +11,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
-import static org.voidbucket.validator.reflect.invoke.ContextualMethodInvoker.ParameterResolverMethod.*;
+import static org.voidbucket.validator.reflect.invoke.ContextualConstraintInvoker.ParameterResolverMethod.*;
 
 /**
- * A {@link MethodInvoker} that uses contextual clues to determine the desired
+ * A {@link ConstraintInvoker} that uses contextual clues to determine the desired
  */
-public final class ContextualMethodInvoker extends AbstractMethodInvoker {
+public final class ContextualConstraintInvoker extends AbstractConstraintInvoker {
 
     @Getter
     private final ParameterResolverStrategy parameterResolverStrategy;
@@ -24,7 +24,7 @@ public final class ContextualMethodInvoker extends AbstractMethodInvoker {
     /**
      * Constructs this invoker using the default strategy: {@link ParameterResolverStrategy#BY_TYPE_THEN_NAME}.
      */
-    public ContextualMethodInvoker() {
+    public ContextualConstraintInvoker() {
         this(ParameterResolverStrategy.BY_TYPE_THEN_NAME);
     }
 
@@ -32,7 +32,7 @@ public final class ContextualMethodInvoker extends AbstractMethodInvoker {
      * Constructs this invoker using the provided {@link ParameterResolverStrategy}.
      * @param parameterResolverStrategy the parameter resolving mode to use
      */
-    public ContextualMethodInvoker(final ParameterResolverStrategy parameterResolverStrategy) {
+    public ContextualConstraintInvoker(final ParameterResolverStrategy parameterResolverStrategy) {
         this.parameterResolverStrategy = parameterResolverStrategy;
     }
 

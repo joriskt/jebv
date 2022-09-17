@@ -8,10 +8,10 @@ import lombok.experimental.Accessors;
 import org.voidbucket.validator.ContextFactory;
 import org.voidbucket.validator.constraint.Constraint;
 import org.voidbucket.validator.constraint.ConstraintDiscoverer;
-import org.voidbucket.validator.reflect.invoke.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ConstraintInvoker;
 import org.voidbucket.validator.constraint.ConstraintValidator;
-import org.voidbucket.validator.reflect.invoke.ContextualMethodInvoker;
-import org.voidbucket.validator.reflect.invoke.NoArgsMethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ContextualConstraintInvoker;
+import org.voidbucket.validator.reflect.invoke.NoArgsConstraintInvoker;
 import org.voidbucket.validator.impl.DefaultContextFactory;
 
 import java.util.HashSet;
@@ -30,9 +30,9 @@ class SimpleValidatorConfig implements Cloneable {
     private Set<? extends ConstraintDiscoverer> discoverers;
     private Set<? extends ConstraintValidator> validators;
 
-    private MethodInvoker defaultInvoker;
-    private Set<? extends MethodInvoker> invokers;
-    private Map<Class<? extends MethodInvoker>, MethodInvoker> invokerMap;
+    private ConstraintInvoker defaultInvoker;
+    private Set<? extends ConstraintInvoker> invokers;
+    private Map<Class<? extends ConstraintInvoker>, ConstraintInvoker> invokerMap;
 
     public SimpleValidatorConfig() {
         this.contextFactory = new DefaultContextFactory();
@@ -40,14 +40,14 @@ class SimpleValidatorConfig implements Cloneable {
         this.discoverers = new HashSet<>();
         this.validators = new HashSet<>();
 
-        this.defaultInvoker = new ContextualMethodInvoker();
+        this.defaultInvoker = new ContextualConstraintInvoker();
         this.invokers = new HashSet<>(List.of(
             defaultInvoker,
-            new NoArgsMethodInvoker()
+            new NoArgsConstraintInvoker()
         ));
     }
 
-    MethodInvoker getOrDefault(final Class<? extends MethodInvoker> invokerType) {
+    ConstraintInvoker getOrDefault(final Class<? extends ConstraintInvoker> invokerType) {
         return invokerMap.getOrDefault(invokerType, defaultInvoker);
     }
 

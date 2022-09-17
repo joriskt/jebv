@@ -2,7 +2,7 @@ package org.voidbucket.validator.discover;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
-import org.voidbucket.validator.annotate.Check;
+import org.voidbucket.validator.annotation.Check;
 import org.voidbucket.validator.constraint.Constraint;
 import org.voidbucket.validator.constraint.ConstraintDiscoverer;
 import org.voidbucket.validator.constraint.ConstraintValidator;
@@ -80,7 +80,7 @@ public class AnnotatedValidatorConstraintDiscoverer implements ConstraintDiscove
             }
 
             // Find a mutator for this annotation type.
-            final BiConsumer<Constraint, Annotation> mutator =
+            final BiConsumer<AnnotatedValidatorConstraint, Annotation> mutator =
                 AnnotatedValidatorConstraint.getMutator(type);
             if (mutator == null) {
                 log.trace("No mutator for: {}", type.getCanonicalName());

@@ -7,7 +7,7 @@ import org.voidbucket.validator.ContextFactory;
 import org.voidbucket.validator.ValidationReport;
 import org.voidbucket.validator.Validator;
 import org.voidbucket.validator.constraint.Constraint;
-import org.voidbucket.validator.reflect.invoke.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ConstraintInvoker;
 
 import java.util.List;
 import java.util.Map;
@@ -21,8 +21,8 @@ public final class SimpleValidator<T> implements Validator<T> {
 
     private final ContextFactory contextFactory;
 
-    private final MethodInvoker defaultInvoker;
-    private final Map<Class<? extends MethodInvoker>, MethodInvoker> invokerMap;
+    private final ConstraintInvoker defaultInvoker;
+    private final Map<Class<? extends ConstraintInvoker>, ConstraintInvoker> invokerMap;
 
     @Override
     public @NotNull ValidationReport validate(final @NotNull T subject) {

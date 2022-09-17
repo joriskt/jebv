@@ -2,7 +2,6 @@ package org.voidbucket.validator.constraint;
 
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
-import org.voidbucket.validator.constraint.readiness.ReadinessEvaluatorChain;
 import org.voidbucket.validator.exception.result.ConstraintStatusException;
 
 import java.lang.reflect.Method;

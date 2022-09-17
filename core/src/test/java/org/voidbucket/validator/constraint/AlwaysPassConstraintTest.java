@@ -2,18 +2,18 @@ package org.voidbucket.validator.constraint;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.voidbucket.validator.reflect.invoke.NoArgsMethodInvoker;
-import org.voidbucket.validator.reflect.invoke.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.NoArgsConstraintInvoker;
+import org.voidbucket.validator.reflect.invoke.ConstraintInvoker;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AlwaysPassConstraintTest {
 
-    private static MethodInvoker INVOKER;
+    private static ConstraintInvoker INVOKER;
 
     @BeforeAll
     static void beforeAll() {
-        INVOKER = new NoArgsMethodInvoker();
+        INVOKER = new NoArgsConstraintInvoker();
     }
 
     @Test
@@ -22,7 +22,7 @@ class AlwaysPassConstraintTest {
         final Constraint constraint = new AlwaysPassConstraint();
 
         // Act
-        final ConstraintStatus status = INVOKER.invoke(, constraint, , null);
+        final ConstraintStatus status = INVOKER.invoke(constraint, null);
 
         // Assert
         assertEquals(ConstraintStatus.PASSED, status);

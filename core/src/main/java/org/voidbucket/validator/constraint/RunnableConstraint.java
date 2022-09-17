@@ -2,7 +2,8 @@ package org.voidbucket.validator.constraint;
 
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
-import org.voidbucket.validator.constraint.readiness.ReadinessEvaluatorChain;
+import org.jetbrains.annotations.Nullable;
+import org.voidbucket.validator.reflect.invoke.ConstraintInvoker;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -31,6 +32,11 @@ public final class RunnableConstraint implements Constraint {
     }
 
     @Override
+    public Object getInstance() {
+        return this;
+    }
+
+    @Override
     @SneakyThrows
     public Method getMethod() {
         return getClass().getMethod("evaluate");
@@ -39,6 +45,11 @@ public final class RunnableConstraint implements Constraint {
     @Override
     public ReadinessEvaluator getReadinessEvaluator() {
         return middlewareChain;
+    }
+
+    @Override
+    public @Nullable Class<? extends ConstraintInvoker> getDesiredInvoker() {
+        return null;
     }
 
 }

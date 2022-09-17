@@ -3,9 +3,8 @@ package org.voidbucket.validator.constraint;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.voidbucket.validator.Context;
-import org.voidbucket.validator.reflect.invoke.ContextualMethodInvoker;
-import org.voidbucket.validator.constraint.readiness.ReadinessEvaluatorChain;
-import org.voidbucket.validator.reflect.invoke.MethodInvoker;
+import org.voidbucket.validator.reflect.invoke.ContextualConstraintInvoker;
+import org.voidbucket.validator.reflect.invoke.ConstraintInvoker;
 import org.voidbucket.validator.violation.Violation;
 
 import java.lang.reflect.Method;
@@ -42,6 +41,11 @@ public final class FixedViolationsConstraint implements Constraint {
     }
 
     @Override
+    public Object getInstance() {
+        return this;
+    }
+
+    @Override
     @SneakyThrows
     public Method getMethod() {
         return getClass().getDeclaredMethod("evaluate", Context.class);
@@ -53,8 +57,8 @@ public final class FixedViolationsConstraint implements Constraint {
     }
 
     @Override
-    public Class<? extends MethodInvoker> getDesiredInvoker() {
-        return ContextualMethodInvoker.class;
+    public Class<? extends ConstraintInvoker> getDesiredInvoker() {
+        return ContextualConstraintInvoker.class;
     }
 
 }

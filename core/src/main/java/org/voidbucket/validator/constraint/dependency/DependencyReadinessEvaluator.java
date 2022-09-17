@@ -1,15 +1,8 @@
-package org.voidbucket.validator.constraint.readiness;
+package org.voidbucket.validator.constraint.dependency;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.voidbucket.validator.ValidatorState;
-import org.voidbucket.validator.constraint.ConstraintReference;
-import org.voidbucket.validator.constraint.ConstraintStatus;
-import org.voidbucket.validator.constraint.Readiness;
-import org.voidbucket.validator.constraint.ReadinessEvaluator;
+import org.voidbucket.validator.constraint.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,13 +33,13 @@ public class DependencyReadinessEvaluator implements ReadinessEvaluator {
             final ConstraintStatus constraintStatus = state.getStatus(dependency.getReference());
 
             // Fail if the dependency is unresolvable.
-            if (!dependency.getActionMap().containsKey(constraintStatus)) {
+            if (!dependency.getReadinessMap().containsKey(constraintStatus)) {
                 log.warn("No ConstraintResult -> ConstraintAction mapping for key: {}", constraintStatus);
                 return Readiness.NEVER;
             }
 
             // Return the action as specified in the action map.
-            final Readiness action = dependency.getActionMap()
+            final Readiness action = dependency.getReadinessMap()
                 .getOrDefault(constraintStatus, Readiness.READY);
             if (!action.isReady()) {
                 actions.add(action);
@@ -63,42 +56,6 @@ public class DependencyReadinessEvaluator implements ReadinessEvaluator {
     @Override
     public int priority() {
         return PRIORITY;
-    }
-
-    @Getter
-    @RequiredArgsConstructor
-    public static final class Dependency {
-
-        private final ConstraintReference reference;
-        private final Map<ConstraintStatus, Readiness> actionMap;
-
-        public static DependencyBuilder builder() {
-            return new DependencyBuilder();
-        }
-
-    }
-
-    @Setter
-    @Accessors(chain = true, fluent = true)
-    public static final class DependencyBuilder {
-
-        private ConstraintReference reference;
-        private Map<ConstraintStatus, Readiness> actionMap;
-
-        public DependencyBuilder() {
-            actionMap = new HashMap<>();
-        }
-
-        public DependencyBuilder action(final ConstraintStatus status,
-                                        final Readiness readiness) {
-            actionMap.put(status, readiness);
-            return this;
-        }
-
-        public Dependency build() {
-            return new Dependency(reference, actionMap);
-        }
-
     }
 
 }
