@@ -34,7 +34,7 @@ public class DependencyReadinessEvaluator implements ReadinessEvaluator {
 
             // Fail if the dependency is unresolvable.
             if (!dependency.getReadinessMap().containsKey(constraintStatus)) {
-                log.warn("No ConstraintResult -> ConstraintAction mapping for key: {}", constraintStatus);
+                log.warn("No ConstraintResult -> Readiness mapping for key: {}", constraintStatus);
                 return Readiness.NEVER;
             }
 
