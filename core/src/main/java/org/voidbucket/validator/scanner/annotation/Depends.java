@@ -1,7 +1,9 @@
-package org.voidbucket.validator.annotation;
+package org.voidbucket.validator.scanner.annotation;
 
 import org.voidbucket.validator.constraint.Readiness;
 import org.voidbucket.validator.constraint.ConstraintStatus;
+import org.voidbucket.validator.scanner.mutator.DependsPrototypeMutator;
+import org.voidbucket.validator.scanner.mutator.Mutator;
 
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -16,6 +18,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Target(METHOD)
 @Retention(RUNTIME)
 @Repeatable(Depends.List.class)
+@Mutator(appliedBy = DependsPrototypeMutator.class)
 public @interface Depends {
 
     /**

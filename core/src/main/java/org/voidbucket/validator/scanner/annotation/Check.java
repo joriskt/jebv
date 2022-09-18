@@ -1,4 +1,4 @@
-package org.voidbucket.validator.annotation;
+package org.voidbucket.validator.scanner.annotation;
 
 import org.voidbucket.validator.Validator;
 import org.voidbucket.validator.constraint.Constraint;
@@ -15,8 +15,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * <p>If {@link #groups()} is specified, this check will only be run if whichever {@link Validator} is evaluating
  * this {@link Constraint} matches one or more of the given groups.</p>
  */
-@Retention(RUNTIME)
 @Target({METHOD})
+@Retention(RUNTIME)
 public @interface Check {
 
     /**
