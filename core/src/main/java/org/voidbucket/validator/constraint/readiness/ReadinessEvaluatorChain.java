@@ -1,6 +1,8 @@
-package org.voidbucket.validator.constraint;
+package org.voidbucket.validator.constraint.readiness;
 
 import org.voidbucket.validator.ValidatorState;
+import org.voidbucket.validator.constraint.Readiness;
+import org.voidbucket.validator.constraint.ReadinessEvaluator;
 
 import java.util.SortedSet;
 import java.util.TreeSet;

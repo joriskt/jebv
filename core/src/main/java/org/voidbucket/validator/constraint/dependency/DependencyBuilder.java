@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 import org.voidbucket.validator.constraint.ConstraintReference;
 import org.voidbucket.validator.constraint.ConstraintStatus;
 import org.voidbucket.validator.constraint.Readiness;
-import org.voidbucket.validator.constraint.ReadinessEvaluatorChain;
+import org.voidbucket.validator.constraint.readiness.ReadinessEvaluatorChain;
 
 import java.util.HashMap;
 import java.util.Map;

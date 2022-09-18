@@ -5,9 +5,9 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.voidbucket.validator.Context;
-import org.voidbucket.validator.annotation.Check;
-import org.voidbucket.validator.annotation.Depends;
-import org.voidbucket.validator.annotation.Provides;
+import org.voidbucket.validator.scanner.annotation.Check;
+import org.voidbucket.validator.scanner.annotation.Depends;
+import org.voidbucket.validator.scanner.annotation.Provides;
 
 import static org.voidbucket.validator.constraint.Readiness.*;
 import static org.voidbucket.validator.constraint.ConstraintStatus.*;
